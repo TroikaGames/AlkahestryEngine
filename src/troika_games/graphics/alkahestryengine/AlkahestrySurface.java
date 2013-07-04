@@ -25,6 +25,7 @@ public class AlkahestrySurface extends SurfaceView implements Callback
 	private Sprite playerSprite = null;
 	private AlkahestryThread thread = null;
 	private boolean isDebugMode = false;
+	private Point[] directionAngles = new Point[8];
 	
 	private int screenX = 0;
 	private int screenY = 0;
@@ -75,6 +76,24 @@ public class AlkahestrySurface extends SurfaceView implements Callback
 		this.playerSprite.addRectangle(new Rect(694, 0, 748, 93), 3);
 		this.playerSprite.addRectangle(new Rect(762, 0, 816, 93), 3);
 		this.playerSprite.setAnimationSpeed(100, 3);
+		
+		
+		float radius = this.centerX;
+		double angle = Math.PI / 4;
+		
+		double curAngle = angle / 2;
+		
+		for (int i = 0; i <= 7; ++i)
+		{
+			double xPoint = this.centerX + radius * (Math.cos(curAngle));
+			double yPoint = this.centerY + radius * (Math.sin(curAngle));
+			
+			this.directionAngles[i] = new Point();
+			this.directionAngles[i].x = (int)xPoint;
+			this.directionAngles[i].y = (int)yPoint;
+			
+			curAngle += angle;
+		}
 		
 		this.thread = new AlkahestryThread(getHolder(), this);
 		
@@ -153,6 +172,15 @@ public class AlkahestrySurface extends SurfaceView implements Callback
 		if (this.gm.currentState == GameMaster.DO_WALK_ABOUT)
 		{
 			doWalkAround(canvas);
+			
+			Paint tempPaint = new Paint();
+			tempPaint.setColor(Color.WHITE);
+
+			for (int i = 0; i <= 7; ++i)
+			{
+				canvas.drawLine((float)centerX, (float)centerY, (float)this.directionAngles[i].x, 
+									(float)this.directionAngles[i].y, tempPaint);
+			}
 		}
 		
 		if (this.isDebugMode)
@@ -297,14 +325,85 @@ public class AlkahestrySurface extends SurfaceView implements Callback
 	
 	// TODO: Clean this up to handle movement in 8 directions.
 	//	That will require a new sprite too.
+	/*
+	 * Returns the sprite direction that should be drawn for the player sprite.
+	 * 
+	 * @param float x - x coordinate of the touch event
+	 * @param float y - y coordinate of the touch even
+	 * 
+	 * @returns 0 = South, 1 = West, 2 = North, 3 = East
+	 */
 	private int getDirection(float x, float y)
 	{
 		int direction = 0;
-		boolean isRightSide = false;
-		boolean isLowerSide = false;
-		boolean isInsideHeight = false;
 		
-		if (x >= this.centerX)
+		/*float radius = this.centerX;
+		double angle = Math.PI / 4;
+		
+		double curAngle = angle / 2;
+		
+		for (int i = 0; i <= 7; ++i)
+		{
+			double xPoint = this.centerX + radius * (Math.cos(curAngle));
+			double yPoint = this.centerY + radius * (Math.sin(curAngle));*/
+		
+		// Math.cos(curAngle) = (xPoint - this.centerX) / radius;
+		
+		
+		//boolean isRightSide = false;
+		//boolean isLowerSide = false;
+		//boolean isInsideHeight = false;
+		
+		
+		// TODO: Fix this shit so that it actually works.
+		float radius = this.centerX;
+		double radiusSquared = Math.pow(radius, 2);
+		double angle = Math.PI / 4;
+		double curAngle = angle / 2;
+		
+		
+		
+		for (int i = 0; i <= 7; ++i) 
+		{
+			double xPart = x - this.directionAngles[i].x;
+			double yPart = y - this.directionAngles[i].y;
+			double chordLength = Math.sqrt(Math.pow(xPart, 2) + Math.pow(yPart, 2));
+			double chordSquared = Math.pow(chordLength, 2);
+			double heightR = .5 * Math.sqrt((4 * radiusSquared) - chordSquared);
+			//double heightH = radius - heightR;
+			
+			double touchAngle = 2 * Math.acos(heightR / radius);
+			
+			if (xPart < 0)
+			{
+				touchAngle = (2 * Math.PI) - touchAngle;
+			}
+			
+			if (touchAngle > curAngle && touchAngle < curAngle + angle)
+			{
+				// TODO: This is temporary until we have a sprite with all the correct facing sides
+				if (i == 0 || i == 1 || i == 2)
+				{
+					return 0;
+				}
+				else if (i == 3)
+				{
+					return 1;
+				}
+				else if (i == 4 || i == 5 || i == 6)
+				{
+					return 2; 
+				}
+				else if (i == 7)
+				{
+					return 3;
+				}
+			}
+			
+			curAngle += angle;
+		}
+		
+		/*if (x >= this.centerX)
 		{
 			isRightSide = true;
 		}
@@ -344,7 +443,7 @@ public class AlkahestrySurface extends SurfaceView implements Callback
 		else if (!isRightSide && isLowerSide)
 		{
 			direction = 1;
-		}
+		}*/
 		
 		return direction;
 	}
@@ -355,8 +454,8 @@ public class AlkahestrySurface extends SurfaceView implements Callback
 		{
 			Paint paint = new Paint();
 			paint.setARGB(255, 255, 255, 255);
-			String debugText = "FPS " + this.averageFPS;
-			canvas.drawText(debugText, this.getWidth() - 50, 20, paint);
+			String debugText = "FPS " + this.averageFPS + " - direction: " + this.gm.currentDirection;
+			canvas.drawText(debugText, this.getWidth() - 150, 20, paint);
 		}
 	}
 }

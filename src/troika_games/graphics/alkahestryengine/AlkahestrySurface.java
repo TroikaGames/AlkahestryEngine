@@ -25,7 +25,8 @@ public class AlkahestrySurface extends SurfaceView implements Callback
 	private Sprite playerSprite = null;
 	private AlkahestryThread thread = null;
 	private boolean isDebugMode = false;
-	private Point[] directionAngles = new Point[8];
+	private Point[] directionPoints = new Point[8];
+	private double[] directionAngles = new double[8];
 	
 	private int screenX = 0;
 	private int screenY = 0;
@@ -78,19 +79,20 @@ public class AlkahestrySurface extends SurfaceView implements Callback
 		this.playerSprite.setAnimationSpeed(100, 3);
 		
 		
-		float radius = this.centerX;
+		float radius = this.centerY;
 		double angle = Math.PI / 4;
 		
 		double curAngle = angle / 2;
 		
 		for (int i = 0; i <= 7; ++i)
 		{
+			this.directionAngles[i] = curAngle;
 			double xPoint = this.centerX + radius * (Math.cos(curAngle));
 			double yPoint = this.centerY + radius * (Math.sin(curAngle));
 			
-			this.directionAngles[i] = new Point();
-			this.directionAngles[i].x = (int)xPoint;
-			this.directionAngles[i].y = (int)yPoint;
+			this.directionPoints[i] = new Point();
+			this.directionPoints[i].x = (int)xPoint;
+			this.directionPoints[i].y = (int)yPoint;
 			
 			curAngle += angle;
 		}
@@ -173,13 +175,36 @@ public class AlkahestrySurface extends SurfaceView implements Callback
 		{
 			doWalkAround(canvas);
 			
-			Paint tempPaint = new Paint();
-			tempPaint.setColor(Color.WHITE);
+			Paint[] tempPaint = new Paint[8];
+			
+			tempPaint[0] = new Paint();
+			tempPaint[0].setColor(Color.WHITE);
+			
+			tempPaint[1] = new Paint();
+			tempPaint[1].setColor(Color.BLACK);
+			
+			tempPaint[2] = new Paint();
+			tempPaint[2].setColor(Color.RED);
+			
+			tempPaint[3] = new Paint();
+			tempPaint[3].setColor(Color.GREEN);
+			
+			tempPaint[4] = new Paint();
+			tempPaint[4].setColor(Color.BLUE);
+			
+			tempPaint[5] = new Paint();
+			tempPaint[5].setColor(Color.YELLOW);
+			
+			tempPaint[6] = new Paint();
+			tempPaint[6].setColor(Color.CYAN);
+			
+			tempPaint[7] = new Paint();
+			tempPaint[7].setColor(Color.MAGENTA);
 
 			for (int i = 0; i <= 7; ++i)
 			{
-				canvas.drawLine((float)centerX, (float)centerY, (float)this.directionAngles[i].x, 
-									(float)this.directionAngles[i].y, tempPaint);
+				canvas.drawLine((float)centerX, (float)centerY, (float)this.directionPoints[i].x, 
+									(float)this.directionPoints[i].y, tempPaint[i]);
 			}
 		}
 		
@@ -337,49 +362,22 @@ public class AlkahestrySurface extends SurfaceView implements Callback
 	{
 		int direction = 0;
 		
-		/*float radius = this.centerX;
-		double angle = Math.PI / 4;
-		
-		double curAngle = angle / 2;
-		
-		for (int i = 0; i <= 7; ++i)
+		double angleSlice = Math.PI / 4;
+		double pathX = x - this.centerX;
+		double pathY = y - this.centerY;
+		double distance = Math.sqrt(pathX * pathX + pathY * pathY);
+		double touchAngle = Math.acos((x - this.centerX) / distance);
+			
+		if (y < this.centerY + 50) // Add a fudge factor.
 		{
-			double xPoint = this.centerX + radius * (Math.cos(curAngle));
-			double yPoint = this.centerY + radius * (Math.sin(curAngle));*/
-		
-		// Math.cos(curAngle) = (xPoint - this.centerX) / radius;
-		
-		
-		//boolean isRightSide = false;
-		//boolean isLowerSide = false;
-		//boolean isInsideHeight = false;
-		
-		
-		// TODO: Fix this shit so that it actually works.
-		float radius = this.centerX;
-		double radiusSquared = Math.pow(radius, 2);
-		double angle = Math.PI / 4;
-		double curAngle = angle / 2;
-		
-		
+			touchAngle = 2 * Math.PI - touchAngle;
+		}
 		
 		for (int i = 0; i <= 7; ++i) 
 		{
-			double xPart = x - this.directionAngles[i].x;
-			double yPart = y - this.directionAngles[i].y;
-			double chordLength = Math.sqrt(Math.pow(xPart, 2) + Math.pow(yPart, 2));
-			double chordSquared = Math.pow(chordLength, 2);
-			double heightR = .5 * Math.sqrt((4 * radiusSquared) - chordSquared);
-			//double heightH = radius - heightR;
+			double angleDiff = Math.abs(touchAngle - this.directionAngles[i]);
 			
-			double touchAngle = 2 * Math.acos(heightR / radius);
-			
-			if (xPart < 0)
-			{
-				touchAngle = (2 * Math.PI) - touchAngle;
-			}
-			
-			if (touchAngle > curAngle && touchAngle < curAngle + angle)
+			if (angleDiff <= angleSlice)
 			{
 				// TODO: This is temporary until we have a sprite with all the correct facing sides
 				if (i == 0 || i == 1 || i == 2)
@@ -399,8 +397,6 @@ public class AlkahestrySurface extends SurfaceView implements Callback
 					return 3;
 				}
 			}
-			
-			curAngle += angle;
 		}
 		
 		/*if (x >= this.centerX)

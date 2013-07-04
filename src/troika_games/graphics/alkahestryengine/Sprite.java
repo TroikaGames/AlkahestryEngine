@@ -8,12 +8,12 @@ import android.graphics.Rect;
 
 public class Sprite
 {
-	private long spriteTime;
-	private Bitmap texture;
-	private ArrayList<Integer> animationIndex;
-	private ArrayList<Integer> animationSpeeds;
-	private ArrayList<ArrayList<Rect>> frames;
-	private ArrayList<Integer> rectangleCounts;
+	private long spriteTime = -1;
+	private Bitmap texture = null;
+	private ArrayList<Integer> animationIndex = null;
+	private ArrayList<Integer> animationSpeeds = null;
+	private ArrayList<ArrayList<Rect>> frames = null;
+	private ArrayList<Integer> rectangleCounts = null;
 	private int height = -1;
 	private int width = -1;
 	

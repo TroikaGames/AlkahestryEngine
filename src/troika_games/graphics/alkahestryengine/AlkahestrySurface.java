@@ -27,6 +27,7 @@ public class AlkahestrySurface extends SurfaceView implements Callback
 	private boolean isDebugMode = false;
 	private Point[] directionPoints = new Point[8];
 	private double[] directionAngles = new double[8];
+	private int[] spriteDirectionMappings = new int[8];
 	
 	private int screenX = 0;
 	private int screenY = 0;
@@ -53,31 +54,7 @@ public class AlkahestrySurface extends SurfaceView implements Callback
 		
 		getHolder().addCallback(this);
 		
-		this.playerSprite = new Sprite(BitmapFactory.decodeResource(resources, R.drawable.knight_m_character));
-		
-		this.playerSprite.addRectangle(new Rect(0, 0, 68, 93), 0);
-		this.playerSprite.addRectangle(new Rect(72, 0, 136, 93), 0);
-		this.playerSprite.addRectangle(new Rect(144, 0, 204, 93), 0);
-		this.playerSprite.setAnimationSpeed(100, 0);
-		
-		
-		this.playerSprite.addRectangle(new Rect(216, 0, 272, 93), 1);
-		this.playerSprite.addRectangle(new Rect(288, 0, 340, 93), 1);
-		this.playerSprite.addRectangle(new Rect(360, 0, 408, 93), 1);
-		this.playerSprite.setAnimationSpeed(100, 1);
-		
-		
-		this.playerSprite.addRectangle(new Rect(417, 0, 476, 93), 2);
-		this.playerSprite.addRectangle(new Rect(488, 0, 544, 93), 2);
-		this.playerSprite.addRectangle(new Rect(556, 0, 612, 93), 2);
-		this.playerSprite.setAnimationSpeed(100, 2);
-		
-		
-		this.playerSprite.addRectangle(new Rect(625, 0, 680, 93), 3);
-		this.playerSprite.addRectangle(new Rect(694, 0, 748, 93), 3);
-		this.playerSprite.addRectangle(new Rect(762, 0, 816, 93), 3);
-		this.playerSprite.setAnimationSpeed(100, 3);
-		
+		loadCharacterSprite(resources);
 		
 		float radius = this.centerY;
 		double angle = Math.PI / 4;
@@ -113,6 +90,69 @@ public class AlkahestrySurface extends SurfaceView implements Callback
 	{
 		super(context);
 		init(gm, x, y, isDebugMode);
+	}
+	
+	private void loadCharacterSprite(Resources resources)
+	{
+		this.playerSprite = new Sprite(BitmapFactory.decodeResource(resources, R.drawable.knight_m_character));
+		
+		// South
+		this.playerSprite.addRectangle(new Rect(0, 0, 68, 93), 0);
+		this.playerSprite.addRectangle(new Rect(72, 0, 136, 93), 0);
+		this.playerSprite.addRectangle(new Rect(144, 0, 204, 93), 0);
+		this.playerSprite.setAnimationSpeed(100, 0);
+		
+		// West
+		this.playerSprite.addRectangle(new Rect(216, 0, 272, 93), 1);
+		this.playerSprite.addRectangle(new Rect(288, 0, 340, 93), 1);
+		this.playerSprite.addRectangle(new Rect(360, 0, 408, 93), 1);
+		this.playerSprite.setAnimationSpeed(100, 1);
+		
+		// North
+		this.playerSprite.addRectangle(new Rect(417, 0, 476, 93), 2);
+		this.playerSprite.addRectangle(new Rect(488, 0, 544, 93), 2);
+		this.playerSprite.addRectangle(new Rect(556, 0, 612, 93), 2);
+		this.playerSprite.setAnimationSpeed(100, 2);
+		
+		// East
+		this.playerSprite.addRectangle(new Rect(625, 0, 680, 93), 3);
+		this.playerSprite.addRectangle(new Rect(694, 0, 748, 93), 3);
+		this.playerSprite.addRectangle(new Rect(762, 0, 816, 93), 3);
+		this.playerSprite.setAnimationSpeed(100, 3);
+		
+		// North West
+		this.playerSprite.addRectangle(new Rect(834, 0, 894, 93), 4);
+		this.playerSprite.addRectangle(new Rect(894, 0, 953, 93), 4);
+		this.playerSprite.addRectangle(new Rect(1015, 0, 816, 93), 4);
+		this.playerSprite.setAnimationSpeed(100, 4);
+		
+		// North East
+		this.playerSprite.addRectangle(new Rect(1018, 0, 1083, 93), 5);
+		this.playerSprite.addRectangle(new Rect(1083, 0, 1145, 93), 5);
+		this.playerSprite.addRectangle(new Rect(1145, 0, 1215, 93), 5);
+		this.playerSprite.setAnimationSpeed(100, 5);
+		
+		// South East
+		this.playerSprite.addRectangle(new Rect(1216, 0, 1267, 93), 6);
+		this.playerSprite.addRectangle(new Rect(1270, 0, 1333, 93), 6);
+		this.playerSprite.addRectangle(new Rect(1340, 0, 1400, 93), 6);
+		this.playerSprite.setAnimationSpeed(100, 6);
+		
+		// South West
+		this.playerSprite.addRectangle(new Rect(1407, 0, 1474, 93), 7);
+		this.playerSprite.addRectangle(new Rect(1474, 0, 1535, 93), 7);
+		this.playerSprite.addRectangle(new Rect(1535, 0, 1608, 93), 7);
+		this.playerSprite.setAnimationSpeed(100, 7);
+		
+		
+		this.spriteDirectionMappings[0] = 6;
+		this.spriteDirectionMappings[1] = 0;
+		this.spriteDirectionMappings[2] = 7;
+		this.spriteDirectionMappings[3] = 1;
+		this.spriteDirectionMappings[4] = 4;
+		this.spriteDirectionMappings[5] = 2;
+		this.spriteDirectionMappings[6] = 5;
+		this.spriteDirectionMappings[7] = 3;
 	}
 
 	@Override
@@ -175,7 +215,7 @@ public class AlkahestrySurface extends SurfaceView implements Callback
 		{
 			doWalkAround(canvas);
 			
-			Paint[] tempPaint = new Paint[8];
+			/*Paint[] tempPaint = new Paint[8];
 			
 			tempPaint[0] = new Paint();
 			tempPaint[0].setColor(Color.WHITE);
@@ -205,7 +245,7 @@ public class AlkahestrySurface extends SurfaceView implements Callback
 			{
 				canvas.drawLine((float)centerX, (float)centerY, (float)this.directionPoints[i].x, 
 									(float)this.directionPoints[i].y, tempPaint[i]);
-			}
+			}*/
 		}
 		
 		if (this.isDebugMode)
@@ -348,15 +388,13 @@ public class AlkahestrySurface extends SurfaceView implements Callback
 		}
 	}
 	
-	// TODO: Clean this up to handle movement in 8 directions.
-	//	That will require a new sprite too.
 	/*
 	 * Returns the sprite direction that should be drawn for the player sprite.
 	 * 
 	 * @param float x - x coordinate of the touch event
 	 * @param float y - y coordinate of the touch even
 	 * 
-	 * @returns 0 = South, 1 = West, 2 = North, 3 = East
+	 * @returns 0 = South, 1 = West, 2 = North, 3 = East, 4 = North West, 5 = North East, 6 = South East, 7 = South West
 	 */
 	private int getDirection(float x, float y)
 	{
@@ -368,7 +406,7 @@ public class AlkahestrySurface extends SurfaceView implements Callback
 		double distance = Math.sqrt(pathX * pathX + pathY * pathY);
 		double touchAngle = Math.acos((x - this.centerX) / distance);
 			
-		if (y < this.centerY + 50) // Add a fudge factor.
+		if (y < this.centerY + 50) // Add a fudge factor so we can get the east direction correct.
 		{
 			touchAngle = 2 * Math.PI - touchAngle;
 		}
@@ -379,67 +417,9 @@ public class AlkahestrySurface extends SurfaceView implements Callback
 			
 			if (angleDiff <= angleSlice)
 			{
-				// TODO: This is temporary until we have a sprite with all the correct facing sides
-				if (i == 0 || i == 1 || i == 2)
-				{
-					return 0;
-				}
-				else if (i == 3)
-				{
-					return 1;
-				}
-				else if (i == 4 || i == 5 || i == 6)
-				{
-					return 2; 
-				}
-				else if (i == 7)
-				{
-					return 3;
-				}
+				return this.spriteDirectionMappings[i];
 			}
 		}
-		
-		/*if (x >= this.centerX)
-		{
-			isRightSide = true;
-		}
-		
-		if (y - 93 >= this.centerY)
-		{
-			isLowerSide = true;
-		}
-		
-		int startY = this.centerY - (93 / 2);
-		
-		if (y >= startY && y < startY + 93)
-		{
-			isInsideHeight = true;
-		}
-		
-		if (isRightSide && isInsideHeight)
-		{
-			direction = 3;
-		}
-		else if (!isRightSide && isInsideHeight)
-		{
-			direction = 1;
-		}
-		else if (isRightSide && isLowerSide)
-		{
-			direction = 0;
-		}
-		else if (isRightSide && !isLowerSide)
-		{
-			direction = 2;
-		}
-		else if (!isRightSide && !isLowerSide)
-		{
-			direction = 2;
-		}
-		else if (!isRightSide && isLowerSide)
-		{
-			direction = 1;
-		}*/
 		
 		return direction;
 	}

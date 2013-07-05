@@ -493,7 +493,8 @@ public class GameMaster
 			yEnd = GameMap.MAX_HEIGHT - 1;
 		}
 
-		// We actually need to use floating point values of this because if we just truncate, we can (and do) end up off by one.  Then we do rounding to get the answer we want.
+		// We actually need to use floating point values of this because if we just truncate, we can (and do) end up off by one.
+		//	Then we do rounding to get the answer we want.
 		int absoluteTileX = (int)((float)position.x / (float)this.currentMap.tileWidth + .5f);
 		int absoluteTileY = (int)((float)position.y / (float)this.currentMap.tileHeight + .5f);
 
@@ -537,31 +538,11 @@ public class GameMaster
 			touchAngle = 2 * Math.PI - touchAngle;
 		}
 		
-		/*double angle = Math.PI / 4;
-		double curAngle = angle / 2;
-		
-		for (int i = 0; i <= 7; ++i)
-		{
-			this.directionAnglesCenter[i] = curAngle;
-			//double xPoint = this.currentPosition.x + radius * (Math.cos(curAngle));
-			//double yPoint = this.currentPosition.y + radius * (Math.sin(curAngle));
-					
-			curAngle += angle;*/
-			
-			
-		
 		for (int i = 0; i <= 7; ++i) 
 		{
 			double angleDiff = 0;
 			
-			//if (this.currentPosition.x = this.centerPosition.x && this.currentPosition.y == this.centerPosition.y)
-			//{
-				angleDiff = Math.abs(touchAngle - this.directionAnglesCenter[i]);
-			//}
-			//else
-			//{
-			//	angleDiff = Math.abs(touchAngle - curAngle;
-			//}
+			angleDiff = Math.abs(touchAngle - this.directionAnglesCenter[i]);
 			
 			if (angleDiff <= angleSlice)
 			{
